@@ -165,3 +165,6 @@
 (set-default-font "Mono-20")
 ;;(add-to-list 'default-frame-alist '(font . "Mono-20" ))
 ;;(set-face-attribute 'default t :font "Mono-20" )
+;;
+(require 'chinese-fonts-setup)
+(chinese-fonts-setup-enable)
