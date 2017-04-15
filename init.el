@@ -15,7 +15,8 @@
 ;; auto install packages
 (require 'cl)
 (defvar my/packages-list '(
-			   chinese-pyim     ;; input method
+			   chinese-fonts-setup    ;; font config
+			   chinese-pyim           ;; input method
 			   chinese-pyim-greatdict ;; dictionary for chinese-pyim
 			   company          ;; auto complete
 			   counsel          ;;
@@ -160,3 +161,7 @@
 ;; config ycmd
 (require 'ycmd)
 (add-hook 'after-init-hook #'global-ycmd-mode)
+
+;;
+(require 'chinese-fonts-setup)
+(chinese-fonts-setup-enable)
