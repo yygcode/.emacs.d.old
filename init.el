@@ -15,12 +15,15 @@
 ;; auto install packages
 (require 'cl)
 (defvar my/packages-list '(
+			   chinese-pyim     ;; input method
+			   chinese-pyim-greatdict ;; dictionary for chinese-pyim
 			   company          ;; auto complete
 			   counsel          ;;
+			   disable-mouse    ;; I hate mouse disturb
 			   hungry-delete    ;; delete all trailing spaces
 			   monokai-theme    ;; common theme
 			   smartparens      ;; dealing parenthesis pairs
-			   smex             ;; M-x helper
+			   ;; smex             ;; M-x helper
 			   swiper           ;; flexible, simple tools for minibuffer completion
 			   ycmd
 			   )
