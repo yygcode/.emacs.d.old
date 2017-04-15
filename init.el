@@ -15,7 +15,8 @@
 ;; auto install packages
 (require 'cl)
 (defvar my/packages-list '(
-			   chinese-pyim     ;; input method
+			   chinese-fonts-setup    ;; font config
+			   chinese-pyim           ;; input method
 			   chinese-pyim-greatdict ;; dictionary for chinese-pyim
 			   company          ;; auto complete
 			   counsel          ;;
@@ -57,7 +58,7 @@
 (setq-default inhibit-splash-screen 1)
 (setq-default cursor-type 'bar)
 (setq-default make-backup-files nil)
-(setq-default auto-save-mode nil)
+(setq-default auto-save-mode -1)
 
 ;; line number, hide menu,scroll,tool
 (delete-selection-mode t)
@@ -160,3 +161,7 @@
 ;; config ycmd
 (require 'ycmd)
 (add-hook 'after-init-hook #'global-ycmd-mode)
+
+(set-default-font "Mono-20")
+;;(add-to-list 'default-frame-alist '(font . "Mono-20" ))
+;;(set-face-attribute 'default t :font "Mono-20" )
