@@ -1,21 +1,75 @@
+;; yanyg<yygcode@gmail.com>
+;;
+;; Reference material
+;;  https://emacs-china.github.io/
+;;  http://elpa.emacs-china.org/
+;;  https://learnxinyminutes.com/docs/elisp/
+
+;; configure package sources,
+;; we uUse elpa china mirror for GFW. Thanks 
 (require 'package)
 (setq package-archives '(("gnu"   . "http://elpa.emacs-china.org/gnu/")
-			 ("melpa" . "http://elpa.emacs-china.org/melpa/")
-
-(custom-set-variables
- '(initial-frame-alist (quote ((fullscreen . maximized))))
- )
-
-(setq-default inhibit-splash-screen 1)
-(global-linum-mode 1)
-			 ))
+			 ("melpa" . "http://elpa.emacs-china.org/melpa/")))
 (package-initialize)
 
-(load-theme 'monokai 1)
+;; auto install packages
+(require 'cl)
+(defvar my/packages-list '(
+			   company          ;; auto complete
+			   counsel          ;;
+			   hungry-delete    ;; delete all trailing spaces
+			   monokai-theme    ;; common theme
+			   smartparens      ;; dealing parenthesis pairs
+			   smex             ;; M-x helper
+			   swiper           ;; flexible, simple tools for minibuffer completion
+			   ycmd
+			   )
+  "auto installed packages list")
+;; support auto remove
+(setq package-selected-packages my/packages-list)
+
+(defun my/packages-installed-p ()
+  (loop for pkg in my/packages-list
+	when (not (package-installed-p pkg)) do (return nil)
+	finally (return t)))
+
+(unless (my/packages-installed-p)
+  (message "Refreshing package database ...")
+  (package-refresh-contents)
+  (dolist (pkg my/packages-list)
+    (when (not (package-installed-p pkg))
+      (package-install pkg))))
+;; finish auto install packages
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(company-idle-delay 0.1)
+ '(company-minimum-prefix-length 1)
+ '(initial-frame-alist (quote ((fullscreen . maximized)))))
+
+(load-theme 'monokai t)
+(setq-default inhibit-splash-screen 1)
 (setq-default cursor-type 'bar)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
+(setq-default make-backup-files nil)
+(setq-default auto-save-mode nil)
+
+;; line number, hide menu,scroll,tool
+(delete-selection-mode t)
+(global-linum-mode 1)
 (menu-bar-mode -1)
+(scroll-bar-mode -1)
+(tool-bar-mode -1)
+
+;; show parenthesis
+(show-paren-mode)
+
+(require 'recentf)
+(recentf-mode)
+
+;; disable backup file
 
 (defun open-init-file()
   (interactive)
@@ -54,8 +108,52 @@
   (beginning-of-line 1)
   (setq this-command 'quick-cut-line))
 
+;; chinese input method
 (require 'chinese-pyim)
 (require 'chinese-pyim-greatdict)
 (chinese-pyim-greatdict-enable)
 ;;(require 'chinese-pyim-basedict)
 ;;(chinese-pyim-basedict-enable)
+
+;; org-mode
+(require 'org)
+(setq-default org-src-fontify-natively t)
+
+(global-company-mode)
+(global-font-lock-mode)
+(global-hl-line-mode)
+
+
+;; config swiper
+;; https://github.com/abo-abo/swiper
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+(setq enable-recursive-minibuffers t)
+(global-set-key "\C-s" 'swiper)
+(global-set-key (kbd "C-c C-r") 'ivy-resume)
+(global-set-key (kbd "<f6>") 'ivy-resume)
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "<f1> f") 'counsel-describe-function)
+(global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+(global-set-key (kbd "<f1> l") 'counsel-find-library)
+;;(global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+;;(global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+(global-set-key (kbd "C-c g") 'counsel-git)
+(global-set-key (kbd "C-c j") 'counsel-git-grep)
+(global-set-key (kbd "C-c k") 'counsel-ag)
+(global-set-key (kbd "C-x l") 'counsel-locate)
+(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+(define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+
+;; config smartparens
+;; https://github.com/Fuco1/smartparens
+(require 'smartparens-config)
+(smartparens-mode t)
+
+;; I hate mouse corrupt cursor position
+(disable-mouse-mode)
+
+;; config ycmd
+(require 'ycmd)
+(add-hook 'after-init-hook #'global-ycmd-mode)
