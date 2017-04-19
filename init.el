@@ -50,6 +50,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(cfs--current-profile "profile1" t)
+ '(cfs--profiles-steps (quote (("profile1" . 5))) t)
  '(company-idle-delay 0.1)
  '(company-minimum-prefix-length 1)
  '(initial-frame-alist (quote ((fullscreen . maximized)))))
@@ -153,7 +155,8 @@
 ;; config smartparens
 ;; https://github.com/Fuco1/smartparens
 (require 'smartparens-config)
-(smartparens-mode t)
+;;(smartparens-mode t)
+(smartparens-global-mode t)
 
 ;; I hate mouse corrupt cursor position
 (disable-mouse-mode)
@@ -162,9 +165,20 @@
 (require 'ycmd)
 (add-hook 'after-init-hook #'global-ycmd-mode)
 
-(set-default-font "Mono-20")
+;;(set-default-font "Mono-20")
 ;;(add-to-list 'default-frame-alist '(font . "Mono-20" ))
 ;;(set-face-attribute 'default t :font "Mono-20" )
 ;;
-(require 'chinese-fonts-setup)
-(chinese-fonts-setup-enable)
+
+(when (string-equal system-type "windows-nt")
+  (message "configure fonts for windows")
+  (require 'chinese-fonts-setup)
+  (chinese-fonts-setup-enable))
+
+;;(require 'company)
+(load "~/.emacs.d/emacscompanywords/company-words")
+(load "~/.emacs.d/emacscompanywords/company-words-discn.el")
+;;(add-to-list 'company-backends 'company-en-words)
+;;(company-en-words-enable)
+;;(global-set-key (kbd "C-\\") (set-input-method "chinese-pyim"))
+;;(set-input-method "chinese-pyim")
