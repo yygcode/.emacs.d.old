@@ -88,9 +88,28 @@
  ;; If there is more than one, they won't work right.
  )
 
+;; try variable access
+(defun open-test-file1()
+  (interactive)
+  (let ((org-dir "e:/git/work/org/test.org"))
+  (find-file org-dir))
+  )
+(global-set-key (kbd "<f5>") 'open-test-file1)
+
+(defun open-test-file()
+  (interactive)
+  (let ((org-dir "e:/git/work/org/test.org"))
+  (find-file org-dir))
+  )
+(global-set-key (kbd "<f4>") 'open-test-file)
+
 (defun open-work-org()
   (interactive)
-  (find-file "~/work/inspur/work-list.org"))
+  (let org-dir ((if (string-equal system-type "windows-nt")
+      (let ((org-dir "e:/git/work/org/work-list.org")) org-dir)
+    (let ((org-dir "~/work/inspur/work-list.org"))) org-dir))
+  (message "change org directory to %s" org-dir)
+  (find-file org-dir)))
 (global-set-key (kbd "<f3>") 'open-work-org)
 
 (defun smart-open-line-above()
@@ -176,8 +195,8 @@
   (chinese-fonts-setup-enable))
 
 ;;(require 'company)
-(load "~/.emacs.d/emacscompanywords/company-words")
-(load "~/.emacs.d/emacscompanywords/company-words-discn.el")
+;;(load "~/.emacs.d/emacscompanywords/company-words")
+;;(load "~/.emacs.d/emacscompanywords/company-words-discn.el")
 ;;(add-to-list 'company-backends 'company-en-words)
 ;;(company-en-words-enable)
 ;;(global-set-key (kbd "C-\\") (set-input-method "chinese-pyim"))
