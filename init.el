@@ -12,38 +12,39 @@
 			 ("melpa" . "http://elpa.emacs-china.org/melpa/")))
 (package-initialize)
 
-;; auto install packages
-(require 'cl)
-(defvar my/packages-list '(
-			   chinese-fonts-setup    ;; font config
-			   chinese-pyim           ;; input method
-			   chinese-pyim-greatdict ;; dictionary for chinese-pyim
-			   company          ;; auto complete
-			   counsel          ;;
-			   disable-mouse    ;; I hate mouse disturb
-			   hungry-delete    ;; delete all trailing spaces
-			   monokai-theme    ;; common theme
-			   smartparens      ;; dealing parenthesis pairs
-			   ;; smex             ;; M-x helper
-			   swiper           ;; flexible, simple tools for minibuffer completion
-			   ycmd
-			   )
-  "auto installed packages list")
+(defvar my/packages-list
+  '(chinese-fonts-setup    ;; font config
+    chinese-pyim           ;; input method
+    chinese-pyim-greatdict ;; dictionary for chinese-pyim
+    company          ;; auto complete
+    counsel          ;;
+    disable-mouse    ;; I hate mouse disturb
+    hungry-delete    ;; delete all trailing spaces
+    monokai-theme    ;; common theme
+    smartparens      ;; dealing parenthesis pairs
+    ;; smex             ;; M-x helper
+    swiper           ;; flexible, simple tools for minibuffer completion
+    ycmd
+    )
+  "auto installed packages")
 ;; support auto remove
 (setq package-selected-packages my/packages-list)
 
-(defun my/packages-installed-p ()
-  (loop for pkg in my/packages-list
-	when (not (package-installed-p pkg)) do (return nil)
-	finally (return t)))
+;; auto install routine
+((lambda(pkg-list)
+  (let (pkgs)
+    (dolist (pkg pkg-list pkgs)
+      (unless (package-installed-p pkg)
+	(setq pkgs (cons pkg pkgs))))
+    (setq pkgs (nreverse pkgs))
+    (message "uninstalled packages: %s" pkgs)
 
-(unless (my/packages-installed-p)
-  (message "Refreshing package database ...")
-  (package-refresh-contents)
-  (dolist (pkg my/packages-list)
-    (when (not (package-installed-p pkg))
-      (package-install pkg))))
-;; finish auto install packages
+    (when (> (length pkgs) 0)
+      (message "Follow packages will be installed: %s" pkgs)
+      (package-refresh-contents)
+      (dolist (pkg pkgs) (package-install pkg)))
+    ))
+ my/packages-list)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -90,28 +91,12 @@
  ;; If there is more than one, they won't work right.
  )
 
-;; try variable access
-(defun open-test-file1()
-  (interactive)
-  (let ((org-dir "e:/git/work/org/test.org"))
-  (find-file org-dir))
-  )
-(global-set-key (kbd "<f5>") 'open-test-file1)
-
-(defun open-test-file()
-  (interactive)
-  (let ((org-dir "e:/git/work/org/test.org"))
-  (find-file org-dir))
-  )
-(global-set-key (kbd "<f4>") 'open-test-file)
-
 (defun open-work-org()
   (interactive)
-  (let org-dir ((if (string-equal system-type "windows-nt")
-      (let ((org-dir "e:/git/work/org/work-list.org")) org-dir)
-    (let ((org-dir "~/work/inspur/work-list.org"))) org-dir))
-  (message "change org directory to %s" org-dir)
-  (find-file org-dir)))
+  (let ((org-dir (if (string-equal system-type "windows-nt")
+		     "e:/git/work/org/work-list."
+		   "~/work/inspur/work-list.org")))
+    (find-file org-dir)))
 (global-set-key (kbd "<f3>") 'open-work-org)
 
 (defun smart-open-line-above()
@@ -180,11 +165,13 @@
 (smartparens-global-mode t)
 
 ;; I hate mouse corrupt cursor position
+(require 'disable-mouse)
 (disable-mouse-mode)
 
 ;; config ycmd
 (require 'ycmd)
-(add-hook 'after-init-hook #'global-ycmd-mode)
+(ycmd-setup)
+(add-hook 'after-init-hook 'global-ycmd-mode)
 
 ;;(set-default-font "Mono-20")
 ;;(add-to-list 'default-frame-alist '(font . "Mono-20" ))
@@ -203,3 +190,5 @@
 ;;(company-en-words-enable)
 ;;(global-set-key (kbd "C-\\") (set-input-method "chinese-pyim"))
 ;;(set-input-method "chinese-pyim")
+
+(setq org-agenda-custom-commands '(("f" occur-tree "FIXME")))
