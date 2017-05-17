@@ -55,7 +55,10 @@
  '(cfs--profiles-steps (quote (("profile1" . 5))) t)
  '(company-idle-delay 0.1)
  '(company-minimum-prefix-length 1)
- '(initial-frame-alist (quote ((fullscreen . maximized)))))
+ '(initial-frame-alist (quote ((fullscreen . maximized))))
+ '(package-selected-packages
+   (quote
+    (chinese-pyim-wbdict chinese-fonts-setup chinese-pyim chinese-pyim-greatdict company counsel disable-mouse hungry-delete monokai-theme smartparens swiper ycmd))))
 
 (load-theme 'monokai t)
 (setq-default inhibit-splash-screen 1)
@@ -94,7 +97,7 @@
 (defun open-work-org()
   (interactive)
   (let ((org-dir (if (string-equal system-type "windows-nt")
-		     "e:/git/work/org/work-list."
+		     "e:/git/work/org/work-list.org"
 		   "~/work/inspur/work-list.org")))
     (find-file org-dir)))
 (global-set-key (kbd "<f3>") 'open-work-org)
@@ -124,7 +127,7 @@
 (require 'chinese-pyim)
 (require 'chinese-pyim-greatdict)
 (chinese-pyim-greatdict-enable)
-;;(require 'chinese-pyim-basedict)
+(require 'chinese-pyim-basedict)
 ;;(chinese-pyim-basedict-enable)
 
 ;; org-mode
@@ -169,9 +172,9 @@
 (disable-mouse-mode)
 
 ;; config ycmd
-(require 'ycmd)
-(ycmd-setup)
-(add-hook 'after-init-hook 'global-ycmd-mode)
+;;(require 'ycmd)
+;;(ycmd-setup)
+;;(add-hook 'after-init-hook 'global-ycmd-mode)
 
 ;;(set-default-font "Mono-20")
 ;;(add-to-list 'default-frame-alist '(font . "Mono-20" ))
@@ -192,3 +195,8 @@
 ;;(set-input-method "chinese-pyim")
 
 (setq org-agenda-custom-commands '(("f" occur-tree "FIXME")))
+
+(prefer-coding-system 'utf-8)
+
+;; config toggle-input-method 
+(setq default-input-method "chinese-pyim")
