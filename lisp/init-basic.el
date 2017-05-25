@@ -18,6 +18,9 @@
   (setq initial-frame-alist (quote ((fullscreen . maximized))))
   (load-theme 'monokai t))
 
+;;(add-hook 'after-startup-hook 'toggle-frame-fullscreen)
+;;(w32-send-sys-command ?\u00f030)
+
 ;; Part 2: Backup
 (setq-default make-backup-files nil)
 (setq-default cursor-type 'bar)
@@ -27,7 +30,7 @@
 
 ;; Part 4: recentf mode
 (require 'recentf)
-(recentf-mode)
+(recentf-mode 1)
 
 ;; Part 5: company and parenthesis
 ;; company
@@ -50,5 +53,37 @@
 (setq fci-rule-character-color "cyan")
 (define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode 1)))
 (global-fci-mode 1)
+
+;; Part 7: Fonts
+(global-set-key (kbd "C-=") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+
+;; Part 8: use counsel to open file and describe
+(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+(setq enable-recursive-minibuffers t)
+(global-set-key "\C-s" 'swiper)
+(global-set-key (kbd "C-c C-r") 'ivy-resume)
+(global-set-key (kbd "C-x C-f") 'counsel-find-file)
+(global-set-key (kbd "C-h f") 'counsel-describe-function)
+(global-set-key (kbd "C-h v") 'counsel-describe-variable)
+(global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-c g") 'counsel-git)
+(global-set-key (kbd "C-c j") 'counsel-git-grep)
+(global-set-key (kbd "C-c k") 'counsel-ag)
+(global-set-key (kbd "C-x l") 'counsel-locate)
+(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+;;(counsel-company)
+;;(define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+
+;; Part 9: font config
+(set-frame-font "Courier New-18" t t)
+
+(setq default-directory "~/")
+
+;; input
+(setq pyim-page-length 9)
+(setq pyim-page-tooltip 'pos-tip)
+(setq pyim-page-style 'one-line)
 
 (provide 'init-basic)

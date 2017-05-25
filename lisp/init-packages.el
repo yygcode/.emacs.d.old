@@ -28,6 +28,7 @@
     swiper           ;; flexible, simple tools for minibuffer completion
     ycmd
     fill-column-indicator ;; column ruler
+    pdf-tools
     )
   "auto installed packages")
 ;; support auto remove

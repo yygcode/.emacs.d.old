@@ -17,6 +17,12 @@
 		       (propertize "|" 'face 'homoglyph);;'font-lock-keyword-face)
 				    )));;)
 
+  (setq linum-format
+	(lambda(line) (concat
+		       (propertize (format linum-format-fmt line) 'face 'linum)
+		       (propertize "|" 'font-lock-faces '(:foreground "cyan"));;'font-lock-keyword-face)
+				    )));;)
+
 (setq linum-mode-inhibit-modes-list
       '(eshell-mode
 	shell-mode

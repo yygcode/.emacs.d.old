@@ -9,6 +9,10 @@
 			 ("melpa" . "http://elpa.emacs-china.org/melpa")))
 (package-initialize)
 
+;; store custom variables separately
+(setq custom-file "~/.emacs.d/custom.el")
+(when (file-exists-p custom-file) (load custom-file))
+
 ;;(setq inhibit-splash-screen t)
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
@@ -19,3 +23,7 @@
 (require 'init-basic)
 (require 'init-linum)
 (require 'init-org)
+(require 'init-chinese-pyim)
+;;(setq frame-resize-pixelwise 1)
+;;(toggle-frame-fullscreen)
+;;(toggle-frame-fullscreen)
