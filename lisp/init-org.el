@@ -6,5 +6,6 @@
 ;;(setq org-agenda-files (concat org-directory "/"))
 (setq org-agenda-files '("~/org"))
 (setq org-default-notes-file (concat org-directory "/notes.org"))
+(setq-default TeX-engine 'xetex)
 
 (provide 'init-org)

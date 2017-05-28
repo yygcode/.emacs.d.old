@@ -77,7 +77,8 @@
 ;;(define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
 
 ;; Part 9: font config
-(set-frame-font "Courier New-18" t t)
+;;(set-frame-font "Courier New-18" t t)
+(set-frame-font "DejaVuSansMono-16" t t)
 
 (setq default-directory "~/")
 
@@ -85,5 +86,13 @@
 (setq pyim-page-length 9)
 (setq pyim-page-tooltip 'pos-tip)
 (setq pyim-page-style 'one-line)
+
+(global-set-key [C-1] '(delete-other-windows))
+(global-set-key (kbd "M-=") 'er/expand-region)
+
+(org-bullets-mode t)
+(setq org-hide-leading-stars t)
+
+(global-flycheck-mode t)
 
 (provide 'init-basic)

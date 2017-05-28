@@ -29,6 +29,11 @@
     ycmd
     fill-column-indicator ;; column ruler
     pdf-tools
+    expand-region
+    iedit
+    org-bullets
+    flycheck
+    org-pomodoro
     )
   "auto installed packages")
 ;; support auto remove
