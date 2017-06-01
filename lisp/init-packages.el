@@ -7,12 +7,12 @@
 ;;  http://elpa.emacs-china.org/
 ;;  https://learnxinyminutes.com/docs/elisp/
 
-(require 'package)
+;;(require 'package)
 
 ;; Use mirror archives for speed and gfw
-(setq package-archives '(("gnu"   . "http://elpa.emacs-china.org/gnu/")
-			 ("melpa" . "http://elpa.emacs-china.org/melpa/")))
-(package-initialize)
+;;(setq package-archives '(("gnu"   . "http://elpa.emacs-china.org/gnu/")
+;;			 ("melpa" . "http://elpa.emacs-china.org/melpa/")))
+;;(package-initialize)
 
 (defvar my/packages-list
   '(chinese-fonts-setup    ;; font config
@@ -34,6 +34,13 @@
     org-bullets
     flycheck
     org-pomodoro
+    gnus
+    color-theme-solarized
+    ggtags
+    helm
+    use-package
+    helm-gtags
+    org-page
     )
   "auto installed packages")
 ;; support auto remove
