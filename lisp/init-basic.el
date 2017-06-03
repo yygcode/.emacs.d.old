@@ -230,5 +230,30 @@
 (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
 (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
 
+(set-face-attribute 'region nil :background "#ae81ff")
+
+(add-to-list 'load-path "~/.emacs.d/evil")
+(require 'evil)
+(evil-mode 1)
+(modify-syntax-entry ?_ "w")
+(add-hook 'c-mode-common-hook #'(lambda () (modify-syntax-entry ?_ "w")))
+
+(global-evil-leader-mode)
+(evil-leader/set-leader "<SPC>")
+(evil-leader/set-key "e" 'find-file)
+(evil-leader/set-key "fr" 'counsel-recentf)
+(evil-leader/set-key
+  "e" 'find-file
+  "b" 'switch-to-buffer
+  "k" 'kill-buffer)
+
+(require 'powerline)
+(powerline-default-theme)
+
+(require 'disable-mouse)
+(global-disable-mouse-mode)
+
+(setq initial-scratch-message "Love #(whoami).")
+
 (provide 'init-basic)
 ;;; init-basic.el ends here

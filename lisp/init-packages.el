@@ -41,6 +41,9 @@
     use-package
     helm-gtags
     org-page
+    evil
+    evil-leader
+    powerline
     )
   "auto installed packages")
 ;; support auto remove
