@@ -5,37 +5,57 @@
 * package
 We use emacs-china.org elpa for GFW. Thanks zilongshanren
 #+BEGIN_SRC emacs-lisp
-(require 'package)
-(setq package-archives '(("gnu" . "http://elpa.emacs-china.org/gnu/")
-			 ("melpa" . "http://elpa.emacs-china.org/melpa/")))
-(package-initialize)
+  (require 'package)
+  (setq package-archives '(("gnu" . "http://elpa.emacs-china.org/gnu/")
+			   ("melpa" . "http://elpa.emacs-china.org/melpa/")))
+  (package-initialize)
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
 #+END_SRC
 
 * org
 #+BEGIN_SRC emacs-lisp
-(setq org-support-shift-select t)
-(setq org-src-fontify-natively t)
-;; (setq org-src-tab-acts-natively t)
-(setq org-directory "~/org")
-(setq org-agenda-files '("~/org"))
-(setq org-default-notes-file (concat org-directory "/notes.org"))
-(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
-(global-set-key "\C-cc" 'org-capture)
-(global-set-key "\C-ca" 'org-agenda)
+  (setq org-support-shift-select t)
+  (setq org-src-fontify-natively t)
+  ;; (setq org-src-tab-acts-natively t)
+  (if (string-equal system-type "windows-nt")
+      (setq org-directory "~/private/misc/org")
+    (setq org-directory "~/org"))
+  (setq org-agenda-files (list org-directory))
+  (setq org-default-notes-file (concat org-directory "/notes.org"))
+  (add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+  (global-set-key "\C-cc" 'org-capture)
+  (global-set-key "\C-ca" 'org-agenda)
+  (setq default-directory (concat org-directory "/"))
 #+END_SRC
 
+* zh
+Chinese-pyim
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+(setq default-input-method "chinese-pyim")
+(require 'init-chinese-pyim)
+;;(setq pyim-page-tooltip nil)
+#+END_SRC
+Chinese fonts
+#+BEGIN_SRC emacs-lisp
+  (use-package chinese-fonts-setup
+    :config
+    (progn
+      (chinese-fonts-setup-enable)
+      ))
+  (setq face-font-rescale-alist '(("Microsoft Yahei" . 1.2) ("WenQuanYi Zen Hei" . 1.2)))
+#+END_SRC
 * basic
 ** startup
 #+BEGIN_SRC emacs-lisp
-(setq-default inhibit-splash-screen t)
-(global-set-key (kbd "C-h /") (lambda() (interactive) (display-splash-screen)))
-(when (display-graphic-p)
-  (scroll-bar-mode -1)
-  (setq initial-frame-alist (quote ((fullscreen . maximized)))))
+  (setq-default inhibit-splash-screen t)
+  (global-set-key (kbd "C-h /") (lambda() (interactive) (display-splash-screen)))
+  (when (display-graphic-p)
+    (scroll-bar-mode -1)
+    (setq initial-frame-alist (quote ((fullscreen . maximized)))))
 #+END_SRC
 
 ** bar and theme
@@ -66,6 +86,16 @@ We use emacs-china.org elpa for GFW. Thanks zilongshanren
   :defer t
   :init (global-disable-mouse-mode)
 )
+#+END_SRC
+** coding
+- Show english date: ENU
+#+BEGIN_SRC emacs-lisp
+  (set-locale-environment "ENU")
+  (prefer-coding-system 'utf-8-unix)
+  (set-default buffer-file-coding-system 'utf-8-unix)
+  (set-default-coding-systems 'utf-8-unix)
+  (set-terminal-coding-system 'utf-8-unix)
+  (set-default locale-coding-system 'utf-8-unix)
 #+END_SRC
 * ivy
 Refer [[http://oremacs.com/swiper/][Ivy User Manual]]
