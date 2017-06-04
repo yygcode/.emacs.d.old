@@ -164,7 +164,7 @@ An interface for interactive completion.
       (defun text-mode-hook-setup ()
 	(make-local-variable 'company-backends)
 	(add-to-list 'company-backends 'company-ispell)
-	(setq company-ispell-dictionary "e:/git/.emacs.d/misc/english-words.txt")
+	(setq company-ispell-dictionary (expand-file-name "~/.emacs.d/misc/english-words.txt"))
         (message "set dict words"))
       (add-hook 'text-mode-hook 'text-mode-hook-setup)
       (defun toggle-company-ispell ()
