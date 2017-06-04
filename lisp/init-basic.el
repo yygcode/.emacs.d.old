@@ -1,8 +1,10 @@
-;; customize emacs ui
+;;; customize --- Emacs ui
 ;;
+;;; Commentary:
 ;; Copyright (C) 2017 yanyg<yygcode@gmail.com>
 ;;
 
+;;; Code:
 ;; Part 1: UI
 ;; inhibits the startup screen
 ;; Call C-h / to see the manual when you need
@@ -15,8 +17,14 @@
 (when (display-graphic-p)
   (scroll-bar-mode -1)
   ;; full screen for X
-  (setq initial-frame-alist (quote ((fullscreen . maximized))))
+  (setq initial-frame-alist (quote ((fullscreen . maximized)))))
+
+(if (display-graphic-p)
+  (load-theme 'monokai t)
   (load-theme 'monokai t))
+
+;;(require 'color-theme-solarized)
+;;(color-theme-solarized)
 
 ;;(add-hook 'after-startup-hook 'toggle-frame-fullscreen)
 ;;(w32-send-sys-command ?\u00f030)
@@ -77,7 +85,8 @@
 ;;(define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
 
 ;; Part 9: font config
-(set-frame-font "Courier New-18" t t)
+;;(set-frame-font "Courier New-18" t t)
+(set-frame-font "DejaVuSansMono-16" t t)
 
 (setq default-directory "~/")
 
@@ -85,6 +94,141 @@
 (setq pyim-page-length 5)
 (setq pyim-page-tooltip 'pos-tip)
 (setq pyim-page-style 'one-line)
+
+(global-set-key [C-1] '(delete-other-windows))
+(global-set-key (kbd "M-=") 'er/expand-region)
+
+;;(org-bullets-mode t)
+;;(setq org-hide-leading-stars t)
+
+(global-flycheck-mode t)
+
+(require 'ggtags)
+
+(ggtags-mode 1)
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (when (derived-mode-p 'c-mode 'c++-mode 'java-mode 'asm-mode)
+              (ggtags-mode 1))))
+
+(require 'helm)
+
+(setq helm-gtags-prefix-key "\C-cg")
+
+(use-package helm-gtags
+  :init
+  (progn
+    (setq helm-gtags-ignore-case t
+          helm-gtags-auto-update t
+          helm-gtags-use-input-at-cursor t
+          helm-gtags-pulse-at-cursor t
+          helm-gtags-prefix-key "\C-cg"
+          helm-gtags-suggested-key-mapping t)
+
+    ;; Enable helm-gtags-mode in Dired so you can jump to any tag
+    ;; when navigate project tree with Dired
+    (add-hook 'dired-mode-hook 'helm-gtags-mode)
+
+    ;; Enable helm-gtags-mode in Eshell for the same reason as above
+    (add-hook 'eshell-mode-hook 'helm-gtags-mode)
+
+    ;; Enable helm-gtags-mode in languages that GNU Global supports
+    (add-hook 'c-mode-hook 'helm-gtags-mode)
+    (add-hook 'c++-mode-hook 'helm-gtags-mode)
+    (add-hook 'java-mode-hook 'helm-gtags-mode)
+    (add-hook 'asm-mode-hook 'helm-gtags-mode)
+
+    ;; key bindings
+    (with-eval-after-load 'helm-gtags
+      (define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
+      (define-key helm-gtags-mode-map (kbd "C-j") 'helm-gtags-select)
+      (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+      (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
+      (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+      (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history))))
+
+(add-to-list 'load-path "~/.emacs.d/elpa/org-page-20170530.1956")
+(require 'org-page)
+(setq op/repository-directory "~/org-pub")
+(setq op/site-domain "file:///home/yanyg/org-pub-server")
+;;; for commenting, you can choose either disqus, duoshuo or hashover
+(setq op/personal-disqus-shortname "yanyg")
+(setq op/personal-duoshuo-shortname "yanyg")
+(setq op/hashover-comments t)
+;;; the configuration below are optional
+(setq op/personal-google-analytics-id "your_google_analytics_id")
+;;(op/do-publication nil "HEAD^1" "~/org-pub/" nil)
+
+(require 'ox-publish)
+(org-publish-project "site")
+
+;; http://orgmode.org/manual/Publishing-options.html
+(setq org-export-with-sub-superscripts nil)
+(setq org-export-with-timestamps nil)
+(setq org-export-author nil)
+(setq org-export-with-creator nil)
+(setq org-export-with-date nil)
+(setq org-export-with-email nil)
+(setq org-export-with-toc 't)
+(setq org-export-with-section-numbers 't)
+(setq org-html-preamble nil)
+(setq org-html-postamble nil)
+
+;; see org-html-style-default
+(setq org-html-head-include-default-style nil)
+
+;; see org-html-scripts
+(setq org-html-head-include-scripts nil)
+(setq org-html-htmlize-output-type 'css)
+
+;; http://orgmode.org/worg/org-tutorials/org-publish-html-tutorial.html
+(setq org-publish-project-alist
+      '(("pages"
+         :base-directory "~/repo/ycode.org/src/"
+         :publishing-directory "~/repo/ycode.org/"
+         :recursive nil
+         :html-head-include-default-style nil
+         :html-head "<link rel=\"shortcut icon\" href=\"http://dirtysalt.info/css/favicon.ico\" />
+<link rel=\"stylesheet\" type=\"text/css\" href=\"./css/site.css\" />"
+         :publishing-function org-html-publish-to-html
+         ;; :auto-sitemap 't
+         ;; :sitemap-filename "sitemap.org"
+         ;; :sitemap-title "Sitemap"
+         :with-toc 't)
+        ("blog"
+         :base-directory "~/repo/ycode.org/src/blogs/"
+         :publishing-directory "~/repo/ycode.org/blogs/"
+         :recursive nil
+         :html-head-include-default-style nil
+         :html-head "<link rel=\"shortcut icon\" href=\"http://yygcode.info/css/favicon.ico\" />
+<link rel=\"stylesheet\" type=\"text/css\" href=\"../css/site.css\" />"
+         :publishing-function org-html-publish-to-html
+         :section-numbers 't
+         :with-toc 't)
+        ("site" :components ("pages" "blog"))))
+
+(setq
+ helm-gtags-ignore-case t
+ helm-gtags-auto-update t
+ helm-gtags-use-input-at-cursor t
+ helm-gtags-pulse-at-cursor t
+ helm-gtags-prefix-key "\C-cg"
+ helm-gtags-suggested-key-mapping t
+ )
+
+(require 'helm-gtags)
+;; Enable helm-gtags-mode
+(add-hook 'dired-mode-hook 'helm-gtags-mode)
+(add-hook 'eshell-mode-hook 'helm-gtags-mode)
+(add-hook 'c-mode-hook 'helm-gtags-mode)
+(add-hook 'c++-mode-hook 'helm-gtags-mode)
+(add-hook 'asm-mode-hook 'helm-gtags-mode)
+(define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
+(define-key helm-gtags-mode-map (kbd "M-s") 'helm-gtags-select)
+(define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+(define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
+(define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+(define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
 
 (setq ring-bell-function 'ignore)
 
@@ -112,3 +256,4 @@
 ;; (setq youdao-dictionary-use-chinese-word-segmentation t)
 
 (provide 'init-basic)
+;;; init-basic.el ends here

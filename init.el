@@ -5,8 +5,11 @@
 
 ;; use china mirror for GFW
 (require 'package)
-(setq package-archives '(("gnu" . "http://elpa.emacs-china.org/gnu")
-			 ("melpa" . "http://elpa.emacs-china.org/melpa")))
+(setq package-archives '(("gnu" . "http://elpa.emacs-china.org/gnu/")
+			 ("melpa" . "http://elpa.emacs-china.org/melpa/")))
+;;(setq package-archives
+;;      '(("gnu" . "file:///home/yanyg/mnt/home/emacs-local/elpa/gnu")
+;;	("melpa" . "http:///home/yanyg/mnt/home/emacs-local/elpa/melpa")))
 (package-initialize)
 
 ;; store custom variables separately
