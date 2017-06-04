@@ -3,7 +3,7 @@
 #+STARTUP: overview
 
 * package
-We use emacs-china.org elpa for GFW. Thanks zilongshanren
+We use emacs-china.org elpa for GFW. Thanks to zilongshanren
 #+BEGIN_SRC emacs-lisp
   (require 'package)
   (setq package-archives '(("gnu" . "http://elpa.emacs-china.org/gnu/")
@@ -13,6 +13,31 @@ We use emacs-china.org elpa for GFW. Thanks zilongshanren
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
     (package-install 'use-package))
+#+END_SRC
+
+* zh and font
+- Chinese-pyim
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+(setq default-input-method "chinese-pyim")
+(require 'init-chinese-pyim)
+;;(setq pyim-page-tooltip nil)
+#+END_SRC
+- fonts
+ + All available fonts to emacs: =(print (font-family-list))=
+ + describe fonts: =(M-x describe-font)=
+ + execute cmd in emacs: cfs-edit-profile cfs-increase-fontsize cfs-decrease-fontsize
+ + Switch: cfs-switch-profile cfs-next-profile
+ + exec describe-char to get font information of current cursor
+ + Visit [[https://github.com/tumashu/chinese-fonts-setup][Github-chinese-font-setup]] for more information
+#+BEGIN_SRC emacs-lisp
+  (use-package chinese-fonts-setup
+    :config
+    (progn
+      (chinese-fonts-setup-enable)
+      (setq cfs-use-face-font-rescale t)
+      ;; (setq face-font-rescale-alist '(("Microsoft Yahei" . 1.2) ("WenQuanYi Zen Hei" . 1.2)))
+      ))
 #+END_SRC
 
 * org
@@ -31,23 +56,6 @@ We use emacs-china.org elpa for GFW. Thanks zilongshanren
   (setq default-directory (concat org-directory "/"))
 #+END_SRC
 
-* zh
-Chinese-pyim
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path "~/.emacs.d/lisp/")
-(setq default-input-method "chinese-pyim")
-(require 'init-chinese-pyim)
-;;(setq pyim-page-tooltip nil)
-#+END_SRC
-Chinese fonts
-#+BEGIN_SRC emacs-lisp
-  (use-package chinese-fonts-setup
-    :config
-    (progn
-      (chinese-fonts-setup-enable)
-      ))
-  (setq face-font-rescale-alist '(("Microsoft Yahei" . 1.2) ("WenQuanYi Zen Hei" . 1.2)))
-#+END_SRC
 * basic
 ** startup
 #+BEGIN_SRC emacs-lisp
@@ -56,6 +64,8 @@ Chinese fonts
   (when (display-graphic-p)
     (scroll-bar-mode -1)
     (setq initial-frame-alist (quote ((fullscreen . maximized)))))
+  (setq visible-bell nil)
+  (setq ring-bell-function 'ignore)
 #+END_SRC
 
 ** bar and theme
@@ -75,10 +85,12 @@ Chinese fonts
 (setq-default cursor-type 'bar)
 (delete-selection-mode t)
 #+END_SRC
+
 ** customize file
 #+BEGIN_SRC emacs-lisp
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 #+END_SRC
+
 ** disable mouse
 #+BEGIN_SRC emacs-lisp
 (use-package disable-mouse
@@ -87,6 +99,7 @@ Chinese fonts
   :init (global-disable-mouse-mode)
 )
 #+END_SRC
+
 ** coding
 - Show english date: ENU
 #+BEGIN_SRC emacs-lisp
@@ -97,6 +110,7 @@ Chinese fonts
   (set-terminal-coding-system 'utf-8-unix)
   (set-default locale-coding-system 'utf-8-unix)
 #+END_SRC
+
 * ivy
 Refer [[http://oremacs.com/swiper/][Ivy User Manual]]
 An interface for interactive completion.
@@ -125,38 +139,89 @@ An interface for interactive completion.
       )
   )
 #+END_SRC
+
 * auto completion
 - Candidates package: company, auto-complete
 - Here use company
 #+BEGIN_SRC emacs-lisp
-(use-package company
-  :ensure t
-  :defer t
-  :init (global-company-mode)
-  :config
-   (progn
-    ;; Use Company for completion
-    (bind-key [remap completion-at-point] #'company-complete company-mode-map)
+  (use-package company
+    :ensure t
+    :defer t
+    :init
+    (add-hook 'after-init-hook 'global-company-mode)
+    :config
+     (progn
+      ;; Use Company for completion
+      (bind-key [remap completion-at-point] #'company-complete company-mode-map)
+      (setq company-tooltip-align-annotations t
+	    ;; Easy navigation to candidates with M-<n>
+	    company-show-numbers t)
+      (setq company-dabbrev-downcase nil)
+      (setq company-minimum-prefix-length 2)
+      (setq company-idle-delay 0.4)
+      (add-to-list 'company-backends 'company-ispell)
 
-    (setq company-tooltip-align-annotations t
-          ;; Easy navigation to candidates with M-<n>
-          company-show-numbers t)
-    (setq company-dabbrev-downcase nil)
-    (setq company-minimum-prefix-length 2)
-    (setq company-idle-delay 0.4))
-  :diminish company-mode)
+      (defun text-mode-hook-setup ()
+	(make-local-variable 'company-backends)
+	(add-to-list 'company-backends 'company-ispell)
+	(setq company-ispell-dictionary "e:/git/.emacs.d/misc/english-words.txt")
+        (message "set dict words"))
+      (add-hook 'text-mode-hook 'text-mode-hook-setup)
+      (defun toggle-company-ispell ()
+	(interactive)
+	(cond
+	 ((memq 'company-ispell company-backends)
+	  (setq company-backends (delete 'company-ispell company-backends))
+	  (message "company-ispell disabled"))
+	 (t
+	  (add-to-list 'company-backends 'company-ispell)
+	  (message "company-ispell enabled!")))))
+    :diminish company-mode)
 
-(use-package smartparens
-  :ensure t
-  :diminish smartparens-mode
-  :config
-  (progn
-    (require 'smartparens-config)
-    (smartparens-global-mode 1)))
+  (use-package smartparens
+    :ensure t
+    :diminish smartparens-mode
+    :config
+    (progn
+      (require 'smartparens-config)
+      (smartparens-global-mode 1)))
 #+END_SRC
+
 * c developer
 #+BEGIN_SRC emacs-lisp
+  (use-package helm
+    :ensure t
+    :init
+    (progn
+      (require 'helm-config)
+      (helm-mode 1))
+    :config
+    (global-set-key (kbd "M-x") 'helm-M-x)
+    :diminish helm-mode)
+
+  (use-package helm-gtags
+    :ensure t
+    :config
+    (setq helm-gtags-ignore-case t
+	  helm-gtags-auto-update t
+	  helm-gtags-use-input-at-cursor t
+	  helm-gtags-pulse-at-cursor t
+	  helm-gtags-prefix-key "\C-cg"
+	  helm-gtags-suggested-key-mapping t)
+    (add-hook 'dired-mode-hook 'helm-gtags-mode)
+    (add-hook 'eshell-mode-hook 'helm-gtags-mode)
+    (add-hook 'c-mode-hook 'helm-gtags-mode)
+    (add-hook 'c++-mode-hook 'helm-gtags-mode)
+    (add-hook 'asm-mode-hook 'helm-gtags-mode)
+    (with-eval-after-load 'helm-gtags
+      (define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
+      (define-key helm-gtags-mode-map (kbd "C-j") 'helm-gtags-select)
+      (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+      (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
+      (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+      (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)))
 #+END_SRC
+
 * introduce
 ** use-package
 *** keywords
