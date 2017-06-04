@@ -29,6 +29,13 @@
     ycmd
     fill-column-indicator ;; column ruler
     pdf-tools
+    sdcv
+    helm-gtags
+    ggtags
+    evil
+    powerline
+    youdao-dictionary
+    mpg123
     )
   "auto installed packages")
 ;; support auto remove

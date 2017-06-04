@@ -46,13 +46,13 @@
 (show-paren-mode t)
 
 ;; Part 6: 80 col Ruler
-(require 'fill-column-indicator)
-(setq fci-rule-column 81)
-(setq fci-rule-color "cyan")
-;;(setq fci-rule-character-color "red")
-(setq fci-rule-character-color "cyan")
-(define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode 1)))
-(global-fci-mode 1)
+;; (require 'fill-column-indicator)
+;; (setq fci-rule-column 81)
+;; (setq fci-rule-color "cyan")
+;; ;;(setq fci-rule-character-color "red")
+;; (setq fci-rule-character-color "cyan")
+;; (define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode 1)))
+;; (global-fci-mode 1)
 
 ;; Part 7: Fonts
 (global-set-key (kbd "C-=") 'text-scale-increase)
@@ -82,8 +82,33 @@
 (setq default-directory "~/")
 
 ;; input
-(setq pyim-page-length 9)
+(setq pyim-page-length 5)
 (setq pyim-page-tooltip 'pos-tip)
 (setq pyim-page-style 'one-line)
+
+(setq ring-bell-function 'ignore)
+
+(require 'chinese-fonts-setup)
+(chinese-fonts-setup-enable)
+(set-fontset-font t 'han (font-spec :family "Microsoft Yahei" :size 16))
+(setq face-font-rescale-alist '(("Microsoft Yahei" . 1.2) ("WenQuanYi Zen Hei" . 1.2)))
+
+(require 'mpg123 "mpg123")
+
+(setq url-automatic-caching t)
+
+;; Example Key binding
+(global-set-key (kbd "C-c y") 'youdao-dictionary-search-at-point)
+(global-set-key (kbd "C-c p") 'youdao-dictionary-search-at-point+)
+(global-set-key (kbd "C-c v") 'youdao-dictionary-play-voice-at-point)
+
+;; Integrate with popwin-el (https://github.com/m2ym/popwin-el)
+;; (push "*Youdao Dictionary*" popwin:special-display-config)
+
+;; Set file path for saving search history
+;; (setq youdao-dictionary-search-history-file "~/.emacs.d/.youdao")
+
+;; Enable Chinese word segmentation support (支持中文分词)
+;; (setq youdao-dictionary-use-chinese-word-segmentation t)
 
 (provide 'init-basic)

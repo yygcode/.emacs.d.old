@@ -24,6 +24,7 @@
 (require 'init-linum)
 (require 'init-org)
 (require 'init-chinese-pyim)
+(require 'init-code)
 ;;(setq frame-resize-pixelwise 1)
 ;;(toggle-frame-fullscreen)
 ;;(toggle-frame-fullscreen)
