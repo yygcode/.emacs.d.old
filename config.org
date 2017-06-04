@@ -1,0 +1,138 @@
+#+TITLE: Emacs configuration
+
+#+STARTUP: overview
+
+* package
+We use emacs-china.org elpa for GFW. Thanks zilongshanren
+#+BEGIN_SRC emacs-lisp
+(require 'package)
+(setq package-archives '(("gnu" . "http://elpa.emacs-china.org/gnu/")
+			 ("melpa" . "http://elpa.emacs-china.org/melpa/")))
+(package-initialize)
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+#+END_SRC
+
+* org
+#+BEGIN_SRC emacs-lisp
+(setq org-support-shift-select t)
+(setq org-src-fontify-natively t)
+;; (setq org-src-tab-acts-natively t)
+(setq org-directory "~/org")
+(setq org-agenda-files '("~/org"))
+(setq org-default-notes-file (concat org-directory "/notes.org"))
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+(global-set-key "\C-cc" 'org-capture)
+(global-set-key "\C-ca" 'org-agenda)
+#+END_SRC
+
+* basic
+** startup
+#+BEGIN_SRC emacs-lisp
+(setq-default inhibit-splash-screen t)
+(global-set-key (kbd "C-h /") (lambda() (interactive) (display-splash-screen)))
+(when (display-graphic-p)
+  (scroll-bar-mode -1)
+  (setq initial-frame-alist (quote ((fullscreen . maximized)))))
+#+END_SRC
+
+** bar and theme
+- hide menu-bar and tool-bar
+#+BEGIN_SRC emacs-lisp
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(if (display-graphic-p)
+  (load-theme 'monokai t)
+  (load-theme 'monokai t))
+(set-face-attribute 'region nil :background "#ae81ff")
+#+END_SRC
+
+** backup and behavior
+#+BEGIN_SRC emacs-lisp
+(setq-default make-backup-files nil)
+(setq-default cursor-type 'bar)
+(delete-selection-mode t)
+#+END_SRC
+** customize file
+#+BEGIN_SRC emacs-lisp
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+#+END_SRC
+** disable mouse
+#+BEGIN_SRC emacs-lisp
+(use-package disable-mouse
+  :ensure t
+  :defer t
+  :init (global-disable-mouse-mode)
+)
+#+END_SRC
+* ivy
+Refer [[http://oremacs.com/swiper/][Ivy User Manual]]
+An interface for interactive completion.
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy
+    :config
+    (progn
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (global-set-key "\C-s" 'swiper)
+      (global-set-key (kbd "C-c C-r") 'ivy-resume)
+      (global-set-key (kbd "<f6>") 'ivy-resume)
+      (global-set-key (kbd "M-x") 'counsel-M-x)
+      (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+      (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+      (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+      (global-set-key (kbd "<f1> l") 'counsel-find-library)
+      (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+      (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+      (global-set-key (kbd "C-c g") 'counsel-git)
+      (global-set-key (kbd "C-c j") 'counsel-git-grep)
+      (global-set-key (kbd "C-c k") 'counsel-ag)
+      (global-set-key (kbd "C-x l") 'counsel-locate)
+      (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+      (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
+      )
+  )
+#+END_SRC
+* auto completion
+- Candidates package: company, auto-complete
+- Here use company
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :ensure t
+  :defer t
+  :init (global-company-mode)
+  :config
+   (progn
+    ;; Use Company for completion
+    (bind-key [remap completion-at-point] #'company-complete company-mode-map)
+
+    (setq company-tooltip-align-annotations t
+          ;; Easy navigation to candidates with M-<n>
+          company-show-numbers t)
+    (setq company-dabbrev-downcase nil)
+    (setq company-minimum-prefix-length 2)
+    (setq company-idle-delay 0.4))
+  :diminish company-mode)
+
+(use-package smartparens
+  :ensure t
+  :diminish smartparens-mode
+  :config
+  (progn
+    (require 'smartparens-config)
+    (smartparens-global-mode 1)))
+#+END_SRC
+* c developer
+#+BEGIN_SRC emacs-lisp
+#+END_SRC
+* introduce
+** use-package
+*** keywords
+- init: execute code before a package is loaded
+- config: execute code after a package is loaded
+- commands: creates autoloads and defer loading the modules
+- diminish: hides useless information, see diminish utility
+*** Refer
+[[https://github.com/jwiegley/use-package][Github for use-package]]
