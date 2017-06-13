@@ -88,8 +88,7 @@
 (setq projectile-switch-project-action 'helm-projectile-find-file)
 (setq projectile-switch-project-action 'helm-projectile)
 
-;;(require 'evil)
-;;(evil-mode 1)
-;;(define-key evil-normal-state-map "." 'helm-gtags-dwim)
-;;(define-key evil-normal-state-map "," 'helm-gtags-pop-stack)
-
+(require 'evil)
+(evil-mode 1)
+(define-key evil-normal-state-map "." 'helm-gtags-dwim)
+(define-key evil-normal-state-map "," 'helm-gtags-pop-stack)
