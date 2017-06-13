@@ -84,12 +84,12 @@
 (require 'projectile)
 (projectile-global-mode)
 (setq projectile-completion-system 'helm)
-(helm-projectile-on)
+;;(helm-projectile-on)
 (setq projectile-switch-project-action 'helm-projectile-find-file)
 (setq projectile-switch-project-action 'helm-projectile)
 
 ;;(require 'evil)
 ;;(evil-mode 1)
-(define-key evil-normal-state-map "." 'helm-gtags-dwim)
-(define-key evil-normal-state-map "," 'helm-gtags-pop-stack)
+;;(define-key evil-normal-state-map "." 'helm-gtags-dwim)
+;;(define-key evil-normal-state-map "," 'helm-gtags-pop-stack)
 
