@@ -5,8 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (org-page command-log-mode mwe-log-commands 2048-game window-numbering helm-gtags ggtags helm color-theme-solarized solarized-theme evil chinese-fonts-setup chinese-pyim chinese-pyim-greatdict company counsel disable-mouse hungry-delete monokai-theme smartparens swiper ycmd fill-column-indicator pdf-tools expand-region iedit org-bullets flycheck org-pomodoro)))
- '(send-mail-function (quote smtpmail-send-it)))
+    (projectile zygospore ycmd window-numbering use-package solarized-theme smartparens powerline pdf-tools org-pomodoro org-page org-bullets nyan-mode mwe-log-commands monokai-theme iedit hungry-delete helm-gtags ggtags function-args flycheck fill-column-indicator expand-region evil-leader disable-mouse counsel company command-log-mode color-theme-solarized chinese-pyim-greatdict chinese-pyim chinese-fonts-setup 2048-game))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

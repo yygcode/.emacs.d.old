@@ -7,14 +7,36 @@ We use emacs-china.org elpa for GFW. Thanks to zilongshanren
 #+BEGIN_SRC emacs-lisp
   (require 'package)
   (setq package-archives '(("gnu" . "http://elpa.emacs-china.org/gnu/")
-			   ("melpa" . "http://elpa.emacs-china.org/melpa/")))
+               ("melpa" . "http://elpa.emacs-china.org/melpa/")))
   (package-initialize)
 
   (unless (package-installed-p 'use-package)
     (package-refresh-contents)
     (package-install 'use-package))
+
+  (setq use-package-always-ensure t)
 #+END_SRC
 
+* Evil
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package evil
+  ;;   :init
+  ;;   (progn
+  ;;     (use-package evil-leader
+  ;;       :init
+  ;;       (global-evil-leader-mode)
+  ;;       :config
+  ;;       (progn
+  ;; 	(setq evil-leader/in-all-states t)))
+  ;;     (evil-mo
+;;       de 1)))
+#+END_SRC
+* window manage
+#+BEGIN_SRC emacs-lisp
+  (use-package zygospore
+    :bind (("C-x 1" . zygospore-toggle-delete-other-windows)
+           ("RET" . newline-and-indent)))
+#+END_SRC
 * zh and font
 - Chinese-pyim
 #+BEGIN_SRC emacs-lisp
@@ -32,6 +54,7 @@ We use emacs-china.org elpa for GFW. Thanks to zilongshanren
  + Visit [[https://github.com/tumashu/chinese-fonts-setup][Github-chinese-font-setup]] for more information
 #+BEGIN_SRC emacs-lisp
   (use-package chinese-fonts-setup
+    :if (display-graphic-p)
     :config
     (progn
       (chinese-fonts-setup-enable)
@@ -97,6 +120,7 @@ We use emacs-china.org elpa for GFW. Thanks to zilongshanren
   :ensure t
   :defer t
   :init (global-disable-mouse-mode)
+  :diminish global-disable-mouse-mode
 )
 #+END_SRC
 
@@ -137,6 +161,7 @@ An interface for interactive completion.
       (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
       (define-key read-expression-map (kbd "C-r") 'counsel-expression-history)
       )
+    :diminish ivy-mode
   )
 #+END_SRC
 
@@ -163,8 +188,7 @@ An interface for interactive completion.
       (defun text-mode-hook-setup ()
 	(make-local-variable 'company-backends)
 	(add-to-list 'company-backends 'company-ispell)
-	(setq company-ispell-dictionary (expand-file-name "~/.emacs.d/misc/english-words.txt"))
-	(message "set dict words"))
+	(setq company-ispell-dictionary (expand-file-name "~/.emacs.d/misc/english-words.txt")))
       (add-hook 'text-mode-hook 'text-mode-hook-setup)
       (defun toggle-company-ispell ()
 	(interactive)
@@ -188,6 +212,24 @@ An interface for interactive completion.
 
 * c developer
 #+BEGIN_SRC emacs-lisp
+  (add-hook 'prog-mode-hook
+        (lambda() (setq show-trailing-whitespace 1)))
+  (setq-default
+   indent-tabs-mode nil
+   tab-width 4)
+
+  (use-package projectile
+    :init
+    (projectile-global-mode)
+    (setq projectile-enable-caching t))
+
+  ;;(setq whitespace-display-mappings '((space-mark 32 [183] [65])))
+  ;;(setq whitespace-style '(space-mark))
+  (setq whitespace-display-mappings '((space-mark 32 [?·])))
+  ;;(setq whitespace-style '(space-mark))
+  (setq whitespace-style '(face trailing spaces space-mark))
+  (whitespace-mode)
+
   (use-package helm
     :ensure t
     :init
@@ -202,11 +244,11 @@ An interface for interactive completion.
     :ensure t
     :config
     (setq helm-gtags-ignore-case t
-	  helm-gtags-auto-update t
-	  helm-gtags-use-input-at-cursor t
-	  helm-gtags-pulse-at-cursor t
-	  helm-gtags-prefix-key "\C-cg"
-	  helm-gtags-suggested-key-mapping t)
+      helm-gtags-auto-update t
+      helm-gtags-use-input-at-cursor t
+      helm-gtags-pulse-at-cursor t
+      helm-gtags-prefix-key "\C-cg"
+      helm-gtags-suggested-key-mapping t)
     (add-hook 'dired-mode-hook 'helm-gtags-mode)
     (add-hook 'eshell-mode-hook 'helm-gtags-mode)
     (add-hook 'c-mode-hook 'helm-gtags-mode)
@@ -219,6 +261,21 @@ An interface for interactive completion.
       (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
       (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
       (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)))
+
+  (use-package function-args
+    :ensure t
+    :config
+    (progn
+      (add-to-list 'auto-mode-alist '("\\.h\\'" . c-mode))
+      (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+      (semantic-add-system-include "/usr/include/" 'c-mode)
+      (semantic-add-system-include "/usr/lib/gcc/x86_64-linux-gnu/4.9.2/include")
+      (set-default 'semantic-case-fold t)))
+#+END_SRC
+
+* Finish
+#+BEGIN_SRC emacs-lisp
+(message "")
 #+END_SRC
 
 * introduce
