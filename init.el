@@ -80,3 +80,16 @@
         monokai-yellow         "#E5C07B")
 
 (set-face-bold-p 'bold nil)
+
+(require 'projectile)
+(projectile-global-mode)
+(setq projectile-completion-system 'helm)
+(helm-projectile-on)
+(setq projectile-switch-project-action 'helm-projectile-find-file)
+(setq projectile-switch-project-action 'helm-projectile)
+
+;;(require 'evil)
+;;(evil-mode 1)
+(define-key evil-normal-state-map "." 'helm-gtags-dwim)
+(define-key evil-normal-state-map "," 'helm-gtags-pop-stack)
+
