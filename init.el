@@ -1,4 +1,4 @@
-;;; init.el --- emacs config entry
+	;;; init.el --- emacs config entry
 
 ;; Copyright (C) 2017 yanyg<yygcode@gmail.com>
 
@@ -28,7 +28,14 @@
 ;; You may delete these explanatory comments.
 (package-initialize)
 
-(org-babel-load-file "~/.emacs.d/config.org")
+(if (and (file-exists-p "~/.emacs.d/config.el")
+         (time-less-p
+          (file-attribute-modification-time (file-attributes "~/.emacs.d/config.org"))
+          (file-attribute-modification-time (file-attributes "~/.emacs.d/config.el"))))
+    (load "~/.emacs.d/config.el")
+  (progn
+    (message "Update config.el from config.org")
+    (org-babel-load-file "~/.emacs.d/config.org")))
 
 ;; use china mirror for GFW
 
@@ -121,3 +128,4 @@ command moves the PDF buffer backward."
           (set-frame-parameter nil 'fullscreen 'fullscreen)
           ))
 ;;(w32-send-sys-command ?\xf030) for windows ?
+;; swap caps and ctrl under linux: setxkbmap -option "ctrl:swapcaps"
