@@ -112,3 +112,12 @@ command moves the PDF buffer backward."
 
 (global-set-key (kbd "<f8>") 'wenshan-other-docview-buffer-scroll-down)
 (global-set-key (kbd "<f9>") 'wenshan-other-docview-buffer-scroll-up)
+;;(add-to-list 'default-frame-alist '(fullscreen . maximized))
+(add-hook 'after-init-hook
+          (lambda()(interactive)
+          ;;  (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+          ;;                         '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
+          ;;(toggle-frame-fullscreen)
+          (set-frame-parameter nil 'fullscreen 'fullscreen)
+          ))
+;;(w32-send-sys-command ?\xf030) for windows ?

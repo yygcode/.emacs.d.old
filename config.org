@@ -86,7 +86,8 @@ We use emacs-china.org elpa for GFW. Thanks to zilongshanren
   (global-set-key (kbd "C-h /") (lambda() (interactive) (display-splash-screen)))
   (when (display-graphic-p)
     (scroll-bar-mode -1)
-    (setq initial-frame-alist (quote ((fullscreen . maximized)))))
+    ;;(setq initial-frame-alist (quote ((fullscreen . maximized))))
+  )
   (setq visible-bell nil)
   (setq ring-bell-function 'ignore)
 #+END_SRC
