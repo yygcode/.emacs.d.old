@@ -92,3 +92,23 @@
 (evil-mode 1)
 (define-key evil-normal-state-map "." 'helm-gtags-dwim)
 (define-key evil-normal-state-map "," 'helm-gtags-pop-stack)
+(defun wenshan-other-docview-buffer-scroll-down ()
+  "There are two visible buffers, one for taking notes and one
+for displaying PDF, and the focus is on the notes buffer. This
+command moves the PDF buffer forward."
+       (interactive)
+       (other-window 1)
+       (doc-view-scroll-up-or-next-page)
+       (other-window 1))
+
+(defun wenshan-other-docview-buffer-scroll-up ()
+  "There are two visible buffers, one for taking notes and one
+for displaying PDF, and the focus is on the notes buffer. This
+command moves the PDF buffer backward."
+       (interactive)
+       (other-window 1)
+       (doc-view-scroll-down-or-previous-page)
+       (other-window 1))
+
+(global-set-key (kbd "<f8>") 'wenshan-other-docview-buffer-scroll-down)
+(global-set-key (kbd "<f9>") 'wenshan-other-docview-buffer-scroll-up)
