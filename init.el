@@ -1,7 +1,7 @@
-	;;; init.el --- emacs config entry
-
+;;; init.el --- emacs config entry
+;;
 ;; Copyright (C) 2017 yanyg<yygcode@gmail.com>
-
+;;
 ;; Author: yanyg<yygcode@gmail.com>
 ;; Homepage: http://ycode.org
 
@@ -9,7 +9,51 @@
 
 ;;; Code:
 
-;; If you want to use the latest, config org as belows:
+(require 'package)
+
+;; emacs-china crashed or stopped ?
+;;(setq package-archives
+;;      '(("gnu" . "http://elpa.emacs-china.org/gnu/")
+;;        ("melpa" . "http://elpa.emacs-china.org/melpa/")))
+(setq package-archives
+      '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
+        ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+	("org"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")
+        ("melpa-stable" .
+	           "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa-stable/")))
+(package-initialize)
+
+(when (not package-archive-contents)
+  (package-refresh-contents))
+
+;; load with noerror
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file t)
+
+
+
+(unless (package-installed-p 'use-package)
+  (progn
+    (message "Install use-package")
+    (package-install 'use-package)))
+
+(eval-when-compile
+  (require 'use-package))
+(setq use-package-always-ensure t)
+(setq use-package-always-pin "melpa-stable")
+(setq use-package-always-defer t)
+
+(global-set-key (kbd "C-c C-f") 'find-function)
+
+;; FIXME: temporary use to reload init file
+;;        reload init is different with restart,
+;;        so you still need to restart for some situation
+;;        e.g.: remove a key binding.
+(global-set-key (kbd "C-c r")
+                (lambda()(interactive)
+                  (load-file (expand-file-name "init.el" user-emacs-directory))))
+
+;; If you want to use the latest org, use the follows config:
 ;; 1. Download latest package or clone repo.
 ;;    URL: http://orgmode.org/
 ;;    REPO:
@@ -21,111 +65,19 @@
 ;;    (add-to-list 'load-path "~/path/to/orgdir/contrib/lisp" t)
 ;; See homepage http://orgmode.org/ for more details.
 
-
-;; Added by Package.el.  This must come before configurations of
-;; installed packages.  Don't delete this line.  If you don't want it,
-;; just comment it out by adding a semicolon to the start of the line.
-;; You may delete these explanatory comments.
-(package-initialize)
-
-(if (and (file-exists-p "~/.emacs.d/config.el")
-         (time-less-p
-          (file-attribute-modification-time (file-attributes "~/.emacs.d/config.org"))
-          (file-attribute-modification-time (file-attributes "~/.emacs.d/config.el"))))
-    (load "~/.emacs.d/config.el")
-  (progn
-    (message "Update config.el from config.org")
-    (org-babel-load-file "~/.emacs.d/config.org")))
-
-;; use china mirror for GFW
-
-;; ;; store custom variables separately
-;; (setq custom-file "~/.emacs.d/custom.el")
-;; (when (file-exists-p custom-file) (load custom-file))
-
-;; ;;(setq inhibit-splash-screen t)
-
-;; (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
-
-;; ;;(shell-command-to-string "fortune")
-
-;; (require 'init-packages)
-;; (require 'init-basic)
-;; (require 'init-linum)
-;; (require 'init-org)
-;; (require 'init-chinese-pyim)
-;; ;;(setq frame-resize-pixelwise 1)
-;; ;;(toggle-frame-fullscreen)
-;; ;;(toggle-frame-fullscreen)
-
-(setq-default initial-scratch-message
-	      (concat ";; Happy hacking "
-		      (or user-login-name "")
-		      " - Emacs loves you!\n\n"))
-
-(smartparens-global-mode t)
-(show-paren-mode t)
-
-  (setq ;; foreground and background
-        monokai-foreground     "#ABB2BF"
-        monokai-background     "#282C34"
-        ;; highlights and comments
-        monokai-comments       "#F8F8F0"
-        monokai-emphasis       "#282C34"
-        monokai-highlight      "#FFB269"
-        monokai-highlight-alt  "#66D9EF"
-        monokai-highlight-line "#1B1D1E"
-        monokai-line-number    "#F8F8F0"
-        ;; colours
-        monokai-blue           "#61AFEF"
-        monokai-cyan           "#56B6C2"
-        monokai-green          "#98C379"
-        monokai-gray           "#3E4451"
-        monokai-violet         "#C678DD"
-        monokai-red            "#E06C75"
-        monokai-orange         "#D19A66"
-        monokai-yellow         "#E5C07B")
-
-(set-face-bold-p 'bold nil)
-
-(require 'projectile)
-(projectile-global-mode)
-(setq projectile-completion-system 'helm)
-;;(helm-projectile-on)
-(setq projectile-switch-project-action 'helm-projectile-find-file)
-(setq projectile-switch-project-action 'helm-projectile)
-
-(require 'evil)
-(evil-mode 1)
-(define-key evil-normal-state-map "." 'helm-gtags-dwim)
-(define-key evil-normal-state-map "," 'helm-gtags-pop-stack)
-(defun wenshan-other-docview-buffer-scroll-down ()
-  "There are two visible buffers, one for taking notes and one
-for displaying PDF, and the focus is on the notes buffer. This
-command moves the PDF buffer forward."
-       (interactive)
-       (other-window 1)
-       (doc-view-scroll-up-or-next-page)
-       (other-window 1))
-
-(defun wenshan-other-docview-buffer-scroll-up ()
-  "There are two visible buffers, one for taking notes and one
-for displaying PDF, and the focus is on the notes buffer. This
-command moves the PDF buffer backward."
-       (interactive)
-       (other-window 1)
-       (doc-view-scroll-down-or-previous-page)
-       (other-window 1))
-
-(global-set-key (kbd "<f8>") 'wenshan-other-docview-buffer-scroll-down)
-(global-set-key (kbd "<f9>") 'wenshan-other-docview-buffer-scroll-up)
-;;(add-to-list 'default-frame-alist '(fullscreen . maximized))
-(add-hook 'after-init-hook
-          (lambda()(interactive)
-          ;;  (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
-          ;;                         '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
-          ;;(toggle-frame-fullscreen)
-          (set-frame-parameter nil 'fullscreen 'fullscreen)
-          ))
-;;(w32-send-sys-command ?\xf030) for windows ?
-;; swap caps and ctrl under linux: setxkbmap -option "ctrl:swapcaps"
+;; FIXME: use-package can provide a keyword to force install built-in package?
+;;
+;; use-package use 'package-installed-p' to check package installed or not
+;; and org is a built-in package, so use-package would ignore org package
+;; but org-plus-contrib is not installed default, so I think I can force install
+;; org by routine package-install but failed.
+;;
+;; Test Code:
+;; (unless (package-installed-p 'org-plus-contrib)
+;;   (progn
+;;     (message "Install org to replace built-in")
+;;     (package-install 'org)))
+(use-package org
+  :pin org
+  :ensure org-plus-contrib)
+(org-babel-load-file "~/.emacs.d/config.org")
